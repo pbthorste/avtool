@@ -9,4 +9,3 @@ func Test1(t *testing.T) {
 	filename := "./testdata/test1/secrets.yaml"
 	Decrypt(filename, password)
 }
-
