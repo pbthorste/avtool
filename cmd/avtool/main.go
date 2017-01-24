@@ -69,10 +69,19 @@ func retrievePassword(vaultPasswordFile, passwordFlag string) (string, error) {
 		return passwordFlag, nil
 	}
 
+	return readPassword()
+}
+
+/*
+Reads password from stdin without showing what was entered.
+ */
+func readPassword() (password string, err error) {
 	fmt.Print("Enter password: ")
 	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
-		return "", errors.New("ERROR: could not input password, " + err.Error())
+		err =  errors.New("ERROR: could not input password, " + err.Error())
+		return
 	}
-	return string(bytePassword), nil
+	password = string(bytePassword)
+	return
 }
