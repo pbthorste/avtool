@@ -42,8 +42,11 @@ func main() {
 				if err != nil {
 					return cli.NewExitError(err, 2)
 				}
-
-				fmt.Println(avtool.Decrypt(filename, pw))
+				result, err := avtool.Decrypt(filename, pw)
+				if err != nil {
+					return cli.NewExitError(err, 1)
+				}
+				fmt.Println(result)
 				return nil
 			},
 		},

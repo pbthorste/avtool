@@ -20,7 +20,13 @@ func check(e error) {
 	}
 }
 
-func Decrypt(filename, password string) string {
+func Decrypt(filename, password string) (result string, err error) {
+	defer func() {
+		if r := recover(); r != nil {
+			//fmt.Println("ERROR", r)
+			err = fmt.Errorf("ERROR: %v", r)
+		}
+	}()
 	data, err := ioutil.ReadFile(filename)
 	check(err)
 	body := splitHeader(data)
@@ -33,7 +39,8 @@ func Decrypt(filename, password string) string {
 	plaintext := make([]byte, len(ciphertext))
 	aesBlock.XORKeyStream(plaintext, ciphertext)
 	padding := int(plaintext[len(plaintext)-1])
-	return string(plaintext[:len(plaintext)-padding])
+	result = string(plaintext[:len(plaintext)-padding])
+	return
 }
 
 /*
@@ -46,7 +53,7 @@ func splitHeader(data []byte) string {
 	header := strings.Split(lines[0], ";")
 	cipherName := strings.TrimSpace(header[2])
 	if cipherName != "AES256" {
-		panic("Error - unsupported cipher: " + cipherName)
+		panic("unsupported cipher: " + cipherName)
 	}
 	body := strings.Join(lines[1:], "")
 	return body
@@ -97,7 +104,6 @@ func checkDigest(key2, cryptedHmac, ciphertext []byte) {
 	hmacDecrypt.Write(ciphertext)
 	expectedMAC := hmacDecrypt.Sum(nil)
 	if !hmac.Equal(cryptedHmac, expectedMAC) {
-		fmt.Println("ERROR - digests do not match - exiting")
-		panic("error")
+		panic("digests do not match - exiting")
 	}
 }
