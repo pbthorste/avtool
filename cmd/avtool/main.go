@@ -16,7 +16,7 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "avtool"
 	app.Version = "1.0.0"
-	app.Usage = "Tool for working with Ansible Vault files `asdf`"
+	app.Usage = "Tool for working with Ansible Vault files"
 	app.Commands = []cli.Command{
 		{
 			Name:    "view",
