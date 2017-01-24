@@ -9,7 +9,7 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 	"syscall"
 	"io/ioutil"
-	"log"
+	"errors"
 )
 
 func main() {
@@ -38,18 +38,12 @@ func main() {
 				}
 				vaultPassword := c.String("vault-password-file")
 				password := c.String("password")
-				retrievePassword(vaultPassword, password)
-				if password == "" {
-
-					fmt.Print("Enter password: ")
-					bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
-					if err != nil {
-						return cli.NewExitError("ERROR: could not input password, " + err.Error(), 2)
-					}
-					password = string(bytePassword)
+				pw, err := retrievePassword(vaultPassword, password)
+				if err != nil {
+					return cli.NewExitError(err, 2)
 				}
-				fmt.Println("--" + password + "--")
-				fmt.Println(avtool.Decrypt(filename, password))
+
+				fmt.Println(avtool.Decrypt(filename, pw))
 				return nil
 			},
 		},
@@ -60,13 +54,13 @@ func main() {
 func retrievePassword(vaultPasswordFile, passwordFlag string) (string, error) {
 	if vaultPasswordFile != "" {
 		if _, err := os.Stat(vaultPasswordFile); os.IsNotExist(err) {
-			return nil, error("ERROR: vault-password-file, could not find: " + vaultPasswordFile)
+			return "", errors.New("ERROR: vault-password-file, could not find: " + vaultPasswordFile)
 		}
 		pw, err := ioutil.ReadFile(vaultPasswordFile)
 		if err != nil {
-			return nil, error("ERROR: vault-password-file, " + err.Error())
+			return "", errors.New("ERROR: vault-password-file, " + err.Error())
 		}
-		return strings.TrimSpace(pw), nil
+		return strings.TrimSpace(string(pw)), nil
 	}
 	if passwordFlag != "" {
 		return passwordFlag, nil
@@ -75,7 +69,7 @@ func retrievePassword(vaultPasswordFile, passwordFlag string) (string, error) {
 	fmt.Print("Enter password: ")
 	bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
 	if err != nil {
-		return nil, error("ERROR: could not input password, " + err.Error())
+		return "", errors.New("ERROR: could not input password, " + err.Error())
 	}
-	return string(bytePassword)
+	return string(bytePassword), nil
 }
