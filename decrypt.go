@@ -20,16 +20,21 @@ func check(e error) {
 	}
 }
 
-func Decrypt(filename, password string) (result string, err error) {
+func DecryptFile(filename, password string) (result string, err error) {
+	data, err := ioutil.ReadFile(filename)
+	check(err)
+	result, err = Decrypt(string(data), password)
+	return
+}
+// Decrypt a string containing the ansible vault
+func Decrypt(data, password string) (result string, err error) {
 	defer func() {
 		if r := recover(); r != nil {
 			//fmt.Println("ERROR", r)
 			err = fmt.Errorf("ERROR: %v", r)
 		}
 	}()
-	data, err := ioutil.ReadFile(filename)
-	check(err)
-	body := splitHeader(data)
+	body := splitHeader([]byte(data))
 	salt, cryptedHmac, ciphertext := decodeData(body)
 	key1, key2, iv := genKeyInitctr(password, salt)
 	checkDigest(key2, cryptedHmac, ciphertext)

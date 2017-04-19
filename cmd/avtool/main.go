@@ -42,11 +42,47 @@ func main() {
 				if err != nil {
 					return cli.NewExitError(err, 2)
 				}
-				result, err := avtool.Decrypt(filename, pw)
+				result, err := avtool.DecryptFile(filename, pw)
 				if err != nil {
 					return cli.NewExitError(err, 1)
 				}
-				fmt.Println(result)
+				fmt.Println("\n" + result)
+				return nil
+			},
+		},
+		{
+			Name: "encrypt",
+			Usage:   "vaultfile.yml - encrypt contents of the given yaml file",
+			Flags:   []cli.Flag{
+				cli.StringFlag{
+					Name: "vault-password-file",
+					Usage: "load password from `VAULT_PASSWORD_FILE`",
+				},
+				cli.StringFlag{
+					Name: "password, p",
+					Usage: "`password` to use",
+				},
+			},
+			Action:  func(c *cli.Context) error {
+				filename := strings.TrimSpace(c.Args().First())
+				if filename == "" {
+					return cli.NewExitError("ERROR: missing file argument", 2)
+				}
+				vaultPassword := c.String("vault-password-file")
+				password := c.String("password")
+				pw, err := retrievePassword(vaultPassword, password)
+				if err != nil {
+					return cli.NewExitError(err, 2)
+				}
+				result, err := avtool.EncryptFile(filename, pw)
+				if err != nil {
+					return cli.NewExitError(err, 1)
+				}
+				err = ioutil.WriteFile(filename, []byte(result), 0600)
+				if err != nil {
+					return cli.NewExitError(err, 1)
+				}
+				fmt.Println("\nEncryption successful")
 				return nil
 			},
 		},
