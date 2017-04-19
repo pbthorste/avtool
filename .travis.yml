@@ -1,0 +1,15 @@
+language: go
+go:
+  - 1.7.x
+before_deploy: make ci
+deploy:
+  provider: releases
+  api_key:
+    secure: RIAZnaKTAQNaUECnBmv3BuaY3sOvs8+rDhs2ZLM9bR3boaK28missFV45ht2ZqZXKR0E1Ba8mG5hqF4t6yQLXeCPImWZd1sJJbvXg/Sv9DS05c5DAVAZqhEhxlJvmQImsogorDSu8U4fhPCpBcdmtpPCm69Tp2Bt7f9yTh8inoFkGo9Af9TLPW6qZfUVAyiqW1rbRjeXD8EJDLQO8n/dKp7sCy5MFzhPzvViOKVC2E7m/r/rySVS+/mBmLSTFNAzUVZMYKETDaJqFtZkYeDJ7bVAtrcA+1KR8MEan3ytZCQ6mScJHxTigBK2K40dWD9tyB6toTprL6Za0so/DsAyAprD1W/aaap17iQ1tDqe7fA9rDPXxx2/pmX2IuNhSRotAwuPwftDVBW6h/AGJ9Hskd6R3oSJxUHMScLWztGxIuhHIzMi+JK+Bf23nwqweMGwiefW496HYITxhSIzXW3+vdQp2cNTysaPjGPyZdh9yByKe2N/3oBYbbT2G62GtRowr3hBqf69N4j0Y0CPWIla7+jUAiJTF9d7xM6resMoF2VcPX+McM6uugG+2iO2h/YsZ4nFZeI1ZNsutzgqSoL75jp4FrieAlrpjKyeUQu8DzweonjNmZrRwCEKvuo/QvLrPwQp2zy2MYulOoX60XvRjP6w2EeDH5MhuyYJuvi6qwc=
+  file_glob: true
+  file:
+    - "build/tgz/*.tar.gz"
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: pbthorste/avtool
