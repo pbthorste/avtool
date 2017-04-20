@@ -11,11 +11,13 @@ import (
 	"io/ioutil"
 	"errors"
 )
-
+var (
+	version string
+)
 func main() {
 	app := cli.NewApp()
 	app.Name = "avtool"
-	app.Version = "1.0.0"
+	app.Version = version
 	app.Usage = "Tool for working with Ansible Vault files"
 	app.Commands = []cli.Command{
 		{
