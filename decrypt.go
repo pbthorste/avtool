@@ -34,6 +34,7 @@ func Decrypt(data, password string) (result string, err error) {
 			err = fmt.Errorf("ERROR: %v", r)
 		}
 	}()
+	data = replaceCarriageReturn(data)
 	body := splitHeader([]byte(data))
 	salt, cryptedHmac, ciphertext := decodeData(body)
 	key1, key2, iv := genKeyInitctr(password, salt)
@@ -46,6 +47,11 @@ func Decrypt(data, password string) (result string, err error) {
 	padding := int(plaintext[len(plaintext)-1])
 	result = string(plaintext[:len(plaintext)-padding])
 	return
+}
+
+// in order to support vault files with windows line endings
+func replaceCarriageReturn(data string) string {
+	return strings.Replace(data, "\r","",-1)
 }
 
 /*
