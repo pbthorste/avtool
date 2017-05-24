@@ -15,7 +15,8 @@ import (
 )
 
 var (
-	version string
+	version      string
+	outputFormat string
 )
 
 func main() {
@@ -42,17 +43,27 @@ func main() {
 					Usage: "'key' to retrieve the value for; 'keys' to list just the key names",
 					Value: "keys",
 				},
+				cli.StringFlag{
+					Name:  "output, o",
+					Usage: "'aligned' to align the output; 'vanilla' for non formatted output",
+					Value: "vanilla",
+				},
 			},
 			Action: func(c *cli.Context) error {
 				vaultPassword := c.String("vault-password-file")
 				password := c.String("password")
 				key := c.String("key")
+				outputFormat = c.String("output")
 				// 01. Input param validations
 				err := validateCommandArgs(c)
 				if err != nil {
 					return err
 				}
 				vaultFileName, err := validateAndGetVaultFile(c)
+				if err != nil {
+					return err
+				}
+				err = validateOutputFormat(c, outputFormat)
 				if err != nil {
 					return err
 				}
@@ -83,7 +94,9 @@ func main() {
 							}
 						} else {
 							// 02. if specific key is given, retrieve only that key
-							println(getDecoratedMessage(key))
+							if outputFormat == "aligned" {
+								println(getDecoratedMessage(key))
+							}
 							println(getYamlKeyValue(key, secretsYaml))
 						}
 					}
@@ -105,8 +118,16 @@ func main() {
 					Name:  "password, p",
 					Usage: "`password` to use",
 				},
+				cli.StringFlag{
+					Name:  "output, o",
+					Usage: "'aligned' to align the output; 'vanilla' for non formatted output",
+					Value: "vanilla",
+				},
 			},
 			Action: func(c *cli.Context) error {
+				vaultPassword := c.String("vault-password-file")
+				password := c.String("password")
+				outputFormat = c.String("output")
 				// 01. Input param validations
 				err := validateCommandArgs(c)
 				if err != nil {
@@ -116,9 +137,11 @@ func main() {
 				if err != nil {
 					return err
 				}
+				err = validateOutputFormat(c, outputFormat)
+				if err != nil {
+					return err
+				}
 				//
-				vaultPassword := c.String("vault-password-file")
-				password := c.String("password")
 				pw, err := retrievePassword(vaultPassword, password)
 				if err != nil {
 					return cli.NewExitError(err, 2)
@@ -131,12 +154,20 @@ func main() {
 				if err != nil {
 					return cli.NewExitError(err, 1)
 				}
-				getDecoratedMessage("Encryption successful")
+				println(getDecoratedMessage("Encryption successful"))
 				return nil
 			},
 		},
 	}
 	app.Run(os.Args)
+}
+
+func validateOutputFormat(c *cli.Context, outputFormat string) (err error) {
+	if outputFormat != "vanilla" && outputFormat != "aligned" {
+		cli.ShowSubcommandHelp(c)
+		return cli.NewExitError(errors.New("ERROR: Unknown output format! Please ref. to usage instructions!"), 2)
+	}
+	return nil
 }
 
 func validateCommandArgs(c *cli.Context) (err error) {
@@ -212,6 +243,14 @@ func readPassword() (password string, err error) {
 }
 
 func getDecoratedMessage(messageIn string) (messageOut string) {
-	return fmt.Sprintf(strings.Repeat(".", 4) + " " + messageIn + " " +
-		strings.Repeat(".", 80-len(messageIn)-6))
+	messageOut = ""
+	// we are using a global variable to control the output format, as getDecoratedMessage is used in multiple places
+	// and the format
+	if outputFormat == "vanilla" {
+		messageOut = messageIn
+	} else if outputFormat == "aligned" {
+		messageOut = fmt.Sprintf(strings.Repeat(".", 4) + " " + messageIn + " " +
+			strings.Repeat(".", 80-len(messageIn)-6))
+	}
+	return
 }
