@@ -11,8 +11,6 @@ all: tools build
 tools:
 	go get -u -v "github.com/mitchellh/gox"
 
-
-
 build:
 	@mkdir -p bin/
 	go get -t ./...
