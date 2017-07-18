@@ -11,6 +11,7 @@ import (
 	"github.com/pbthorste/avtool"
 	"github.com/smallfish/simpleyaml"
 	"golang.org/x/crypto/ssh/terminal"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 var (
