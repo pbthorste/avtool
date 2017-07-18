@@ -7,10 +7,11 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"golang.org/x/crypto/pbkdf2"
 	"io/ioutil"
 	"log"
 	"strings"
+
+	"golang.org/x/crypto/pbkdf2"
 )
 
 func check(e error) {
@@ -24,8 +25,10 @@ func DecryptFile(filename, password string) (result string, err error) {
 	data, err := ioutil.ReadFile(filename)
 	check(err)
 	result, err = Decrypt(string(data), password)
+	check(err)
 	return
 }
+
 // Decrypt a string containing the ansible vault
 func Decrypt(data, password string) (result string, err error) {
 	defer func() {
@@ -51,7 +54,7 @@ func Decrypt(data, password string) (result string, err error) {
 
 // in order to support vault files with windows line endings
 func replaceCarriageReturn(data string) string {
-	return strings.Replace(data, "\r","",-1)
+	return strings.Replace(data, "\r", "", -1)
 }
 
 /*
@@ -77,17 +80,17 @@ https://github.com/ansible/ansible/blob/0b8011436dc7f842b78298848e298f2a57ee8d78
 func decodeData(body string) (salt, cryptedHmac, ciphertext []byte) {
 	decoded, _ := hex.DecodeString(body)
 	elements := strings.SplitN(string(decoded), "\n", 3)
-	salt, err1 := hex.DecodeString(elements[0])
-	if err1 != nil {
-		panic(err1)
+	salt, err := hex.DecodeString(elements[0])
+	if err != nil {
+		panic(err)
 	}
-	cryptedHmac, err2 := hex.DecodeString(elements[1])
-	if err2 != nil {
-		panic(err2)
+	cryptedHmac, err = hex.DecodeString(elements[1])
+	if err != nil {
+		panic(err)
 	}
-	ciphertext, err3 := hex.DecodeString(elements[2])
-	if err3 != nil {
-		panic(err3)
+	ciphertext, err = hex.DecodeString(elements[2])
+	if err != nil {
+		panic(err)
 	}
 	return
 }
