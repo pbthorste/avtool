@@ -7,7 +7,7 @@
   ],
   "extends": [
     "config:base",
-    ":pinAllExceptPeerDependencies"
+    "group:allNonMajor"
   ],
   "major": {
     "labels": [
