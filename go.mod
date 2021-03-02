@@ -1,4 +1,4 @@
-module github.com/clok/avtool
+module github.com/clok/avtool/v2
 
 go 1.15
 
