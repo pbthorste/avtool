@@ -1,24 +1,23 @@
 # avtool
-Decrypt ansible vault files in golang.
 
-The tool uses the same command line parameters as the `ansible-vault` command.
+> NOTE: Original code written by [@pbthorste](https://github.com/pbthorste) for [https://github.com/pbthorste/avtool](https://github.com/pbthorste/avtool)
+>
+> HUGE SHOUT OUT to [@pbthorste](https://github.com/pbthorste)
 
-# Why?
-This is useful if you are writing code in golang and need to manipulate Ansible vault files.
+This module provides a reimplemnetation of tha `ansible-vault` encrypt and decprypt functionality in Go.
 
-Also useful if you want to decrypt an Ansible vault file, and are not keen on installing python.
+## Why the fork?
 
-# Downloading
-See the [Releases](https://github.com/pbthorste/avtool/releases)
+As of writing the mainline has been stale for ~4 years.
 
-# Code
-The code is derived from code in the ansible project:
+I have found this code to be highly useful and important for writing other `ansible-vault` related tools. I wanted to modernize the work done previously to support `go.mod` while also updating the interface as an importable module for other code.
 
-https://github.com/ansible/ansible
+## CLI Tool
 
-# Building
-Install golang 1.7. To build, use the Makefile, run:
-```bash
-make ci
-```
-The tool will be built and placed in the `build/` folder.
+Please see [gwvault](https://github.com/GoodwayGroup/gwvault) for a purpose built `ansible-vault` binary written in go.
+
+It leverages the work done by [@pbthorste](https://github.com/pbthorste) for [https://github.com/pbthorste/avtool](https://github.com/pbthorste/avtool) while further fleshing out the CLI tool to be more in line with the original `ansible-vault` CLI tool.
+
+## Thanks and Attribution
+
+Original code written by [@pbthorste](https://github.com/pbthorste)
