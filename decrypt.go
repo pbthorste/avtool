@@ -40,9 +40,9 @@ func Decrypt(data, password string) (result string, err error) {
 	salt, cryptedHmac, ciphertext := decodeData(body)
 	key1, key2, iv := genKeyInitctr(password, salt)
 	checkDigest(key2, cryptedHmac, ciphertext)
-	aes_cipher, err := aes.NewCipher(key1)
+	aesCipher, err := aes.NewCipher(key1)
 	check(err)
-	aesBlock := cipher.NewCTR(aes_cipher, iv)
+	aesBlock := cipher.NewCTR(aesCipher, iv)
 	plaintext := make([]byte, len(ciphertext))
 	aesBlock.XORKeyStream(plaintext, ciphertext)
 	padding := int(plaintext[len(plaintext)-1])
@@ -113,7 +113,8 @@ https://github.com/ansible/ansible/blob/0b8011436dc7f842b78298848e298f2a57ee8d78
 */
 func checkDigest(key2, cryptedHmac, ciphertext []byte) {
 	hmacDecrypt := hmac.New(sha256.New, key2)
-	hmacDecrypt.Write(ciphertext)
+	_, err := hmacDecrypt.Write(ciphertext)
+	check(err)
 	expectedMAC := hmacDecrypt.Sum(nil)
 	if !hmac.Equal(cryptedHmac, expectedMAC) {
 		panic("digests do not match - exiting")

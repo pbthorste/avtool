@@ -56,21 +56,23 @@ func createCipherText(body string, key1, iv []byte) []byte {
 	plaintext := []byte(body)
 	plaintext = append(plaintext, padArray...)
 
-	aes_cipher, err := aes.NewCipher(key1)
+	aesCipher, err := aes.NewCipher(key1)
 	check(err)
 	ciphertext := make([]byte, len(plaintext))
 
-	aesBlock := cipher.NewCTR(aes_cipher, iv)
+	aesBlock := cipher.NewCTR(aesCipher, iv)
 	aesBlock.XORKeyStream(ciphertext, plaintext)
 	return ciphertext
 }
 
 func combineParts(ciphertext, key2, salt []byte) string {
 	hmacEncrypt := hmac.New(sha256.New, key2)
-	hmacEncrypt.Write(ciphertext)
+	_, err := hmacEncrypt.Write(ciphertext)
+	check(err)
 	hexSalt := hex.EncodeToString(salt)
 	hexHmac := hmacEncrypt.Sum(nil)
 	hexCipher := hex.EncodeToString(ciphertext)
+	// nolint:unconvert
 	combined := string(hexSalt) + "\n" + hex.EncodeToString([]byte(hexHmac)) + "\n" + string(hexCipher)
 	return combined
 }
