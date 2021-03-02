@@ -4,7 +4,7 @@
 >
 > HUGE SHOUT OUT to [@pbthorste](https://github.com/pbthorste)
 
-This module provides a reimplemnetation of tha `ansible-vault` encrypt and decprypt functionality in Go.
+This module provides a reimplementation of `ansible-vault` encrypt and decprypt functionality in Go.
 
 ## Why the fork?
 
