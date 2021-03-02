@@ -26,6 +26,7 @@ func DecryptFile(filename, password string) (result string, err error) {
 	result, err = Decrypt(string(data), password)
 	return
 }
+
 // Decrypt a string containing the ansible vault
 func Decrypt(data, password string) (result string, err error) {
 	defer func() {
@@ -51,7 +52,7 @@ func Decrypt(data, password string) (result string, err error) {
 
 // in order to support vault files with windows line endings
 func replaceCarriageReturn(data string) string {
-	return strings.Replace(data, "\r","",-1)
+	return strings.Replace(data, "\r", "", -1)
 }
 
 /*

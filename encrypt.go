@@ -2,13 +2,13 @@ package avtool
 
 import (
 	"crypto/aes"
-	"crypto/rand"
 	"crypto/cipher"
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"strings"
 	"io/ioutil"
+	"strings"
 )
 
 func GenerateRandomBytes(n int) ([]byte, error) {
@@ -36,15 +36,15 @@ func Encrypt(body, password string) (result string, err error) {
 	//salt,_ = hex.DecodeString(salt_64)
 	key1, key2, iv := genKeyInitctr(password, salt)
 	ciphertext := createCipherText(body, key1, iv)
-	combined := combineParts(ciphertext,key2,salt)
+	combined := combineParts(ciphertext, key2, salt)
 	vaultText := hex.EncodeToString([]byte(combined))
 	result = formatOutput(vaultText)
 	return
 }
 
-func createCipherText(body string, key1,iv []byte) []byte {
+func createCipherText(body string, key1, iv []byte) []byte {
 	bs := aes.BlockSize
-	padding := (bs - len(body) % bs)
+	padding := (bs - len(body)%bs)
 	if padding == 0 {
 		padding = bs
 	}
