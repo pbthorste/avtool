@@ -31,7 +31,6 @@ func DecryptFile(filename, password string) (result string, err error) {
 func Decrypt(data, password string) (result string, err error) {
 	defer func() {
 		if r := recover(); r != nil {
-			//fmt.Println("ERROR", r)
 			err = fmt.Errorf("ERROR: %v", r)
 		}
 	}()
@@ -52,7 +51,7 @@ func Decrypt(data, password string) (result string, err error) {
 
 // in order to support vault files with windows line endings
 func replaceCarriageReturn(data string) string {
-	return strings.Replace(data, "\r", "", -1)
+	return strings.ReplaceAll(data, "\r", "")
 }
 
 /*

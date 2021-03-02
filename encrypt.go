@@ -32,8 +32,8 @@ func EncryptFile(filename, password string) (result string, err error) {
 func Encrypt(body, password string) (result string, err error) {
 	salt, err := GenerateRandomBytes(32)
 	check(err)
-	//salt_64 := "2262970e2309d5da757af6c473b0ed3034209cc0d48a3cc3d648c0b174c22fde"
-	//salt,_ = hex.DecodeString(salt_64)
+	// salt_64 := "2262970e2309d5da757af6c473b0ed3034209cc0d48a3cc3d648c0b174c22fde"
+	// salt,_ = hex.DecodeString(salt_64)
 	key1, key2, iv := genKeyInitctr(password, salt)
 	ciphertext := createCipherText(body, key1, iv)
 	combined := combineParts(ciphertext, key2, salt)
