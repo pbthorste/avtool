@@ -2,6 +2,13 @@
 ## [Unreleased]
 
 
+<a name="v2.0.1"></a>
+## [v2.0.1] - 2021-03-03
+### Chore
+- **github actions:** update github actions versions
+- **github actions:** add go proxy warming
+
+
 <a name="v2.0.0"></a>
 ## [v2.0.0] - 2021-03-02
 ### Chore
@@ -17,6 +24,7 @@
 
 ### Features
 - **gomod:** add go.mod support
+- **release:** v2.0.0
 - **v2:** bump module version to v2
 
 
@@ -90,7 +98,8 @@ Added -k flag for selective viewing & additional validations
 - to own function
 
 
-[Unreleased]: https://github.com/clok/avtool/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/clok/avtool/compare/v2.0.1...HEAD
+[v2.0.1]: https://github.com/clok/avtool/compare/v2.0.0...v2.0.1
 [v2.0.0]: https://github.com/clok/avtool/compare/1.2.0...v2.0.0
 [1.2.0]: https://github.com/clok/avtool/compare/1.1.1...1.2.0
 [1.1.1]: https://github.com/clok/avtool/compare/1.1.0...1.1.1
