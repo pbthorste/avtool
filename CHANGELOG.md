@@ -2,6 +2,15 @@
 ## [Unreleased]
 
 
+<a name="v2.1.1"></a>
+## [v2.1.1] - 2021-05-13
+### Bug Fixes
+- **deps:** update golang.org/x/crypto commit hash to cd7d49e ([#7](https://github.com/clok/avtool/issues/7))
+
+### Chore
+- **ci:** added Makefile and goreleaser
+
+
 <a name="v2.1.0"></a>
 ## [v2.1.0] - 2021-03-15
 ### Chore
@@ -9,6 +18,9 @@
 - **deps:** update actions/setup-go action to v2 ([#4](https://github.com/clok/avtool/issues/4))
 - **deps:** update actions/checkout action to v2 ([#3](https://github.com/clok/avtool/issues/3))
 - **go.mod:** bump to go 1.16
+
+### Features
+- **release:** v2.1.0
 
 
 <a name="v2.0.3"></a>
@@ -128,7 +140,8 @@ Added -k flag for selective viewing & additional validations
 - to own function
 
 
-[Unreleased]: https://github.com/clok/avtool/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/clok/avtool/compare/v2.1.1...HEAD
+[v2.1.1]: https://github.com/clok/avtool/compare/v2.1.0...v2.1.1
 [v2.1.0]: https://github.com/clok/avtool/compare/v2.0.3...v2.1.0
 [v2.0.3]: https://github.com/clok/avtool/compare/v2.0.2...v2.0.3
 [v2.0.2]: https://github.com/clok/avtool/compare/v2.0.1...v2.0.2
