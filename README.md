@@ -1,24 +1,28 @@
 # avtool
-Decrypt ansible vault files in golang.
 
-The tool uses the same command line parameters as the `ansible-vault` command.
+[![License: MIT](https://img.shields.io/badge/License-GPL_v3-brightgreen.svg)](https://github.com/clok/avtool/blob/main/LICENSE)
+[![Go Report Card](https://goreportcard.com/badge/clok/avtool)](https://goreportcard.com/report/clok/avtool)
+[![Coverage Status](https://coveralls.io/repos/github/clok/avtool/badge.svg?branch=main)](https://coveralls.io/github/clok/avtool?branch=main)
+[![go.dev reference](https://img.shields.io/badge/go.dev-reference-007d9c?logo=go&logoColor=white)](https://pkg.go.dev/github.com/clok/avtool/v2?tab=overview)
 
-# Why?
-This is useful if you are writing code in golang and need to manipulate Ansible vault files.
+> NOTE: Original code written by [@pbthorste](https://github.com/pbthorste) for [https://github.com/pbthorste/avtool](https://github.com/pbthorste/avtool)
+>
+> HUGE SHOUT OUT to [@pbthorste](https://github.com/pbthorste)
 
-Also useful if you want to decrypt an Ansible vault file, and are not keen on installing python.
+This module provides a reimplementation of `ansible-vault` encrypt and decprypt functionality in Go.
 
-# Downloading
-See the [Releases](https://github.com/pbthorste/avtool/releases)
+## Why the fork?
 
-# Code
-The code is derived from code in the ansible project:
+As of writing the mainline has been stale for ~4 years.
 
-https://github.com/ansible/ansible
+I have found this code to be highly useful and important for writing other `ansible-vault` related tools. I wanted to modernize the work done previously to support `go.mod` while also updating the interface as an importable module for other code.
 
-# Building
-Install golang 1.7. To build, use the Makefile, run:
-```bash
-make ci
-```
-The tool will be built and placed in the `build/` folder.
+## CLI Tool
+
+Please see [gwvault](https://github.com/GoodwayGroup/gwvault) for a purpose built `ansible-vault` binary written in go.
+
+It leverages the work done by [@pbthorste](https://github.com/pbthorste) for [https://github.com/pbthorste/avtool](https://github.com/pbthorste/avtool) while further fleshing out the CLI tool to be more in line with the original `ansible-vault` CLI tool.
+
+## Thanks and Attribution
+
+Original code written by [@pbthorste](https://github.com/pbthorste)

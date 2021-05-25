@@ -1,0 +1,24 @@
+{
+  "semanticCommits": true,
+  "prHourlyLimit": 5,
+  "reviewersFromCodeOwners": true,
+  "labels": [
+    "dependencies"
+  ],
+  "extends": [
+    "config:base",
+    "group:allNonMajor"
+  ],
+  "major": {
+    "labels": [
+      "dependencies",
+      "major"
+    ]
+  },
+  "minor": {
+    "labels": [
+      "dependencies",
+      "minor"
+    ]
+  }
+}

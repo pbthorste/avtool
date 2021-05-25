@@ -1,0 +1,34 @@
+style: github
+template: CHANGELOG.tpl.md
+info:
+  title: CHANGELOG
+  repository_url: https://github.com/clok/avtool
+options:
+  commits:
+  # filters:
+  #   Type:
+  #     - feat
+  #     - fix
+  #     - perf
+  #     - refactor
+  commit_groups:
+    title_maps:
+      feat: Features
+      fix: Bug Fixes
+      bugfix: Bug Fixes
+      perf: Performance Improvements
+      refactor: Code Refactoring
+      chore: Chore
+      devops: DevOps
+      techdebt: Tech Debt
+      debt: Tech Debt
+      hotfix: Hot Fix
+  header:
+    pattern: "^((?:[^v][^\\d\\.])[\\w\\-]*)(?:\\((.*?)\\))?\\:?\\s?(.+)$"
+    pattern_maps:
+      - Type
+      - Scope
+      - Subject
+  notes:
+    keywords:
+      - BREAKING CHANGE

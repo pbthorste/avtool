@@ -2,13 +2,13 @@ package avtool
 
 import (
 	"crypto/aes"
-	"crypto/rand"
 	"crypto/cipher"
 	"crypto/hmac"
+	"crypto/rand"
 	"crypto/sha256"
 	"encoding/hex"
-	"strings"
 	"io/ioutil"
+	"strings"
 )
 
 func GenerateRandomBytes(n int) ([]byte, error) {
@@ -32,19 +32,19 @@ func EncryptFile(filename, password string) (result string, err error) {
 func Encrypt(body, password string) (result string, err error) {
 	salt, err := GenerateRandomBytes(32)
 	check(err)
-	//salt_64 := "2262970e2309d5da757af6c473b0ed3034209cc0d48a3cc3d648c0b174c22fde"
-	//salt,_ = hex.DecodeString(salt_64)
+	// salt_64 := "2262970e2309d5da757af6c473b0ed3034209cc0d48a3cc3d648c0b174c22fde"
+	// salt,_ = hex.DecodeString(salt_64)
 	key1, key2, iv := genKeyInitctr(password, salt)
 	ciphertext := createCipherText(body, key1, iv)
-	combined := combineParts(ciphertext,key2,salt)
+	combined := combineParts(ciphertext, key2, salt)
 	vaultText := hex.EncodeToString([]byte(combined))
 	result = formatOutput(vaultText)
 	return
 }
 
-func createCipherText(body string, key1,iv []byte) []byte {
+func createCipherText(body string, key1, iv []byte) []byte {
 	bs := aes.BlockSize
-	padding := (bs - len(body) % bs)
+	padding := (bs - len(body)%bs)
 	if padding == 0 {
 		padding = bs
 	}
@@ -56,21 +56,23 @@ func createCipherText(body string, key1,iv []byte) []byte {
 	plaintext := []byte(body)
 	plaintext = append(plaintext, padArray...)
 
-	aes_cipher, err := aes.NewCipher(key1)
+	aesCipher, err := aes.NewCipher(key1)
 	check(err)
 	ciphertext := make([]byte, len(plaintext))
 
-	aesBlock := cipher.NewCTR(aes_cipher, iv)
+	aesBlock := cipher.NewCTR(aesCipher, iv)
 	aesBlock.XORKeyStream(ciphertext, plaintext)
 	return ciphertext
 }
 
 func combineParts(ciphertext, key2, salt []byte) string {
 	hmacEncrypt := hmac.New(sha256.New, key2)
-	hmacEncrypt.Write(ciphertext)
+	_, err := hmacEncrypt.Write(ciphertext)
+	check(err)
 	hexSalt := hex.EncodeToString(salt)
 	hexHmac := hmacEncrypt.Sum(nil)
 	hexCipher := hex.EncodeToString(ciphertext)
+	// nolint:unconvert
 	combined := string(hexSalt) + "\n" + hex.EncodeToString([]byte(hexHmac)) + "\n" + string(hexCipher)
 	return combined
 }

@@ -1,45 +1,88 @@
-# Makefile for aws-lambda-tool
+# Build Variables
+VERSION ?= $(shell git describe --tags --always)
 
-NAME=avtool
+# Go variables
+GO      ?= go
+GOOS    ?= $(shell $(GO) env GOOS)
+GOARCH  ?= $(shell $(GO) env GOARCH)
+GOHOST  ?= GOOS=$(GOOS) GOARCH=$(GOARCH) $(GO)
 
-VERSION=$$(git describe --tags --always)
+LDFLAGS ?= "-X main.version=$(VERSION)"
 
-LDFLAGS=-ldflags "-X main.version=${VERSION}"
+.PHONY: all
+all: help
 
-all: tools build
+###############
+##@ Development
 
-tools:
-	go get -u -v "github.com/mitchellh/gox"
+.PHONY: clean
+clean: ## Clean workspace
+	@ $(MAKE) --no-print-directory log-$@
+	rm -rf coverage.out
+	go mod tidy
 
-build:
-	@mkdir -p bin/
-	go get -t ./...
-	go test -v ./...
-	go build ${LDFLAGS} -o bin/${NAME} cmd/avtool/main.go
+.PHONY: test
+test: ## Run tests
+	@ $(MAKE) --no-print-directory log-$@
+	$(GOHOST) test -covermode count -coverprofile coverage.out -v  -run ^Test ./...
 
-xbuild: clean
-	@mkdir -p build
-	gox \
-		-os="linux" \
-		-os="windows" \
-		-os="darwin" \
-		-arch="amd64" \
-		${LDFLAGS} \
-		-output="build/{{.Dir}}_$(VERSION)_{{.OS}}_{{.Arch}}/$(NAME)" \
-		./...
+.PHONY: lint
+lint: ## Run linters
+	@ $(MAKE) --no-print-directory log-$@
+	golangci-lint run
 
-package: xbuild
-	$(eval FILES := $(shell ls build))
-	@mkdir -p build/tgz
-	for f in $(FILES); do \
-		(cd $(shell pwd)/build && tar -zcvf tgz/$$f.tar.gz $$f); \
-		echo $$f; \
-	done
+###########
+##@ Release
 
-clean:
-	@rm -rf bin/ && rm -rf build/
+.PHONY: check
+check:  ## Check if version exists
+	@ $(MAKE) --no-print-directory log-$@
+ 	ifeq ($(shell git tag -l | grep -c $(VERSION) 2>/dev/null), 0)
+ 	else
+		@git tag -l
+		@echo "VERSION: $(VERSION) has already been used. Please pass in a different version value."
+		@exit 2
+ 	endif
 
-ci: tools package
+.PHONY: changelog
+changelog: check  ## Generate changelog
+	@ $(MAKE) --no-print-directory log-$@
+	git-chglog --next-tag $(VERSION) -o CHANGELOG.md
 
-.PHONY: all tools build xbuild package clean ci
+.PHONY: release
+release: changelog   ## Release a new tag
+	@ $(MAKE) --no-print-directory log-$@
+	git add CHANGELOG.md
+	git commit -m "chore: update changelog for $(VERSION)"
+	git tag $(VERSION)
+	git push origin main $(VERSION)
 
+########
+##@ Help
+
+.PHONY: help
+help: ## Display this help
+	@awk \
+		-v "col=\033[36m" -v "nocol=\033[0m" \
+		' \
+			BEGIN { \
+				FS = ":.*##" ; \
+				printf "Usage:\n  make %s<target>%s\n", col, nocol \
+			} \
+			/^[a-zA-Z_-]+:.*?##/ { \
+				printf "  %s%-12s%s %s\n", col, $$1, nocol, $$2 \
+			} \
+			/^##@/ { \
+				printf "\n%s%s%s\n", nocol, substr($$0, 5), nocol \
+			} \
+		' $(MAKEFILE_LIST)
+
+log-%:
+	@grep -h -E '^$*:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk \
+			'BEGIN { \
+				FS = ":.*?## " \
+			}; \
+			{ \
+				printf "\033[36m==> %s\033[0m\n", $$2 \
+			}'
